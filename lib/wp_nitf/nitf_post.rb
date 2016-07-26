@@ -75,8 +75,7 @@ module WpNitf
           @doc.classifier(type: "tncms:asset", value: "asset")
         end
         @doc.send(:"doc-id", "id-string" => @post[:guid])
-        # TODO: Use section map
-        @doc.pubdata(type: "web", "position.section" => "")
+        @doc.pubdata(type: "web", "position.section" => section[@blog_id])
         @doc.send(:"date.release", norm: @post[:post_date])
       end
     end
@@ -131,8 +130,8 @@ module WpNitf
     end
 
     def nitf_body_text
-      html = autop(@text.css("body").inner_html).gsub("<p></p>", "")
-      @doc.p { @doc.cdata html }
+      html = autop(@text.css("body").inner_html)
+      @doc.p { @doc.cdata html.gsub("<p></p>", "").gsub("<p><p>", "<p>") }
     end
 
     def autop(str)
@@ -145,6 +144,30 @@ module WpNitf
     def filename
       title = @post[:post_title] + (Time.now.to_f * 1000).to_i.to_s
       Digest::SHA1.bubblebabble(title) + ".xml"
+    end
+
+    def section
+      {
+        2 => "baton_rouge/sports/lsu",
+        3 => "baton_rouge/sports/lsu",
+        4 => "new_orleans/sports/saints",
+        5 => "baton_rouge/news/politics",
+        6 => "baton_rouge/sports/lsu",
+        27 => "baton_rouge/sports/high_schools",
+        9 => "baton_rouge/sports/southern",
+        26 => "baton_rouge/sports/lsu",
+        24 => "baton_rouge/entertainment_life",
+        23 => "baton_rouge/news/politics",
+        17 => "baton_rouge/sports",
+        18 => "new_orleans/sports/high_schools",
+        19 => "acadiana/entertainment_life",
+        20 => "baton_rouge/opinion/stephanie_grace",
+        21 => "baton_rouge/opinion/walt_handelsman",
+        22 => "baton_rouge/news",
+        29 => "acadiana/sports/ul_lafayette",
+        30 => "baton_rouge/news",
+        31 => "new_orleans/news/crime_police"
+      }
     end
   end
 end

@@ -24,6 +24,17 @@ module WpNitf
       end
     end
 
+    option :num, type: :numeric, aliases: "-n",
+           desc: "Number of posts to export"
+    desc "export_included [options]", "Export post(s) from all approved blogs"
+    def export_included
+      excluded = [7, 13, 14, 15, 28]
+      blog_ids = WpNitf::WpBlog.blog_ids
+      blog_ids.reject { |x| excluded.include?(x) }.each do |blog_id|
+        WpNitf.convert(blog_id, options[:num])
+      end
+    end
+
     private
 
     def blog_id
