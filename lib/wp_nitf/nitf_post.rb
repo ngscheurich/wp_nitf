@@ -74,7 +74,7 @@ module WpNitf
         @doc.docdata do
           @doc.classifier(type: "tncms:asset", value: "asset")
         end
-        @doc.send(:"doc-id", "id-string" => @post[:guid])
+        @doc.send(:"doc-id", "id-string" => pretty_url)
         @doc.pubdata(type: "web", "position.section" => section[@blog_id])
         @doc.send(:"date.release", norm: @post[:post_date])
       end
@@ -126,7 +126,7 @@ module WpNitf
     end
 
     def photo_id(i)
-      @post[:guid] + "[photo-#{i}]"
+      pretty_url + "[photo-#{i}]"
     end
 
     def nitf_body_text
@@ -168,6 +168,11 @@ module WpNitf
         30 => "baton_rouge/news",
         31 => "new_orleans/news/crime_police"
       }
+    end
+
+    def pretty_url
+      ymd = @post[:post_date].strftime("%Y/%m/%d")
+      @post[:guid].split("?")[0] + "#{ymd}/#{@post[:post_name]}"
     end
   end
 end
